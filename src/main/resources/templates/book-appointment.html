@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link th:href = "@{/css/mystyles.css}" rel="stylesheet">
+</head>
+  <body>
+
+    <!-- Responsive navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Medcare Booking System: Book Appointment</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="select-clinic">Select Clinic</a></li>
+                    <li class="nav-item"><a class="nav-link" href="patient-registration">Patient Registration</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="book-appointment">Book Appointment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment-confirmation">Appointment Confirmation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment-lookup">Lookup Your Appointment</a></li>
+                </ul>
+            </div>
+        </div>
+       </nav>
+
+    <section class="vh-10 gradient-custom">
+        <div class="container py-5 h-10">
+            <div class="row justify-content-center align-items-center h-10">
+                <div class="col-12 col-lg-9 col-xl-7">
+
+                    <h1 class="text-center mb-4 pb-0 pb-md-2 mb-md-4">Book Your Appointment</h1>
+
+                    <div>
+                        <h4 class="text-danger text-center"><span th:text="${insertedDangerDateTime}"></span></h4>
+                    </div>
+
+                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                        <div class="card-body p-4 p-md-5">
+                            <h3 class="mb-4 pb-0 pb-md-2 mb-md-4">Your Appointment Details</h3>
+
+                            <form method="post" th:action="@{/post-book-appointment}" th:object="${appointment}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+
+                                        <div class="form-outline">
+                                            <label><b>Clinic Location</b></label>
+                                            <input type="text" id="clinicLocation" class="form-control form-control-lg mt-2" th:value="${appointment.office.name}" disabled readonly/>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+
+                                        <div class="form-outline">
+                                            <label><b>Care Service Provided</b></label>
+                                            <input type="text" id="careServiceDepartment" class="form-control form-control-lg mt-2" th:value="${appointment.appointmentSpecialty}" disabled readonly/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-4">
+
+                                        <div class="form-outline">
+                                            <label><b>Doctor Name</b></label>
+                                            <input type="text" id="doctorInfo" class="form-control form-control-lg mt-2" th:value= "${appointment.doctor.name}" disabled readonly/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-md-6 mb-4">
+
+                                        <div class="form-outline">
+                                            <label><b>Patient Name</b></label>
+                                            <input type="text" id="patientName" class="form-control form-control-lg mt-2" th:value= "${appointment.patient.fullName}" disabled readonly/>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+
+                                        <div class="form-outline">
+                                            <label><b>Patient DOB</b></label>
+                                            <input type="text" id="patientDob" class="form-control form-control-lg mt-2" th:value= "${#dates.format(appointment.patient.dob, 'MM/dd/yyyy')}" disabled readonly/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <hr class="hr mt-3 mb-3" />
+
+                                <h4 class="mt-4 pb-0 pb-md-2 mb-md-3">Select Appointment Date and Time</h4>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4 pb-0">
+
+                                        <div class="form-outline datepicker w-100">
+                                            <label><b>Select Date</b></label>
+                                            <input
+                                                    type="date"
+                                                    class="form-control form-control-lg mt-2"
+                                                    id="selectDate"
+                                                    name="selectDate"
+                                                    th:field="${appointment.appointmentDate}"
+                                            />
+                                            <span th:if="${#fields.hasErrors('appointmentDate')}" th:errors="*{appointment.appointmentDate}" class="error text-warning text-danger"></span>
+                                            <div>
+                                                <p3 class="text-danger text-center"><span th:text="${insertedDangerWrongDate}"></span></p3>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6 mb-2 pb-0">
+
+                                        <div class="form-outline">
+                                            <label><b>Select Time</b></label>
+                                            <input
+                                                    type="time"
+                                                    class="form-control form-control-lg mt-2"
+                                                    id="selectTime"
+                                                    name="timeSelected"
+                                                    th:field="${appointment.appointmentTime}"
+                                            />
+                                            <span th:if="${#fields.hasErrors('appointmentTime')}" th:errors="*{appointment.appointmentTime}" class="error text-warning text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary"> Confirm </button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script th:src = "@{/js/myScripts04.js}"></script>
+
+  </body>
+</html>

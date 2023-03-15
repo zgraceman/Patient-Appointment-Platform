@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link th:href = "@{/css/mystyles.css}" rel="stylesheet">
+</head>
+  <body>
+
+    <!-- Responsive navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Medcare Booking System: Select Clinic</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="select-clinic">Select Clinic</a></li>
+                    <li class="nav-item"><a class="nav-link" href="patient-registration">Patient Registration</a></li>
+                    <li class="nav-item"><a class="nav-link" href="book-appointment">Book Appointment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment-confirmation">Appointment Confirmation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment-lookup">Lookup Your Appointment</a></li>
+                </ul>
+            </div>
+        </div>
+       </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <section class = "jumbotron text-center mt-4">
+                    <div class = "container">
+
+                        <h2>You have selected <b><u><span th:text="${infoSelectClinic}"></span></u></b> care services</h2>
+
+                        <h4 class = "jumbotron mt-4">
+                           Below is a list of clinics that provide your selected care service.
+                        </h4>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+
+                <div>
+                    <h4 class="text-danger text-center"><span th:text="${insertedDangerClinic}"></span></h4>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(specialtyDoctorsNorth)}">
+                    <section class="vh-10 gradient-custom mt-3" id="doctorsTable">
+                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                            <div class="card-body p-4 p-md-3 m-3">
+
+                                <h4 class = "jumbotron-heading">Clinic Northdale</h4>
+
+                                <table class="table">
+                                    <tr>
+                                        <th scope="col">Doctor Name</th>
+                                        <th scope="col">Specialties</th>
+                                        <th scope="col"></th>
+                                    </tr>
+
+                                    <tr th:each="doctor: ${specialtyDoctorsNorth}">
+                                        <td th:text="${doctor.name}"></td>
+                                        <td th:text="${doctor.specialties}"></td>
+                                        <td>
+                                            <form method="post" th:action="@{/post-select-clinic}">
+
+                                                <input
+                                                        type="hidden"
+                                                        id="clinicSelectNorth"
+                                                        name="clinicChoice"
+                                                        th:value="Northdale"
+                                                        class="form-control form-control-lg"
+                                                />
+                                                <input
+                                                        type="hidden"
+                                                        id="doctorSelectNorth"
+                                                        name="doctorChoice"
+                                                        th:value="*{doctor.name}"
+                                                        class="form-control form-control-lg"
+                                                />
+
+                                                <button onclick = "selectClinicAndDoctor()" class="btn btn-primary"> Select </button>
+
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(specialtyDoctorsEast)}">
+                    <section class="vh-10 gradient-custom mt-4" id="doctorsTable01">
+                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                            <div class="card-body p-4 p-md-3 m-3">
+
+                                <h4 class = "jumbotron-heading">Clinic Eastview</h4>
+
+                                <table class="table">
+                                    <tr>
+                                        <th scope="col">Doctor Name</th>
+                                        <th scope="col">Specialties</th>
+                                        <th scope="col"></th>
+                                    </tr>
+
+                                    <tr th:each="doctor: ${specialtyDoctorsEast}">
+                                        <td th:text="${doctor.name}"></td>
+                                        <td th:text="${doctor.specialties}"></td>
+                                        <td>
+                                            <form method="post" th:action="@{/post-select-clinic}">
+                                                <input
+                                                        type="hidden"
+                                                        id="clinicSelectEast"
+                                                        name="clinicChoice"
+                                                        th:value="Eastview"
+                                                        class="form-control form-control-lg"
+                                                />
+                                                <input
+                                                        type="hidden"
+                                                        id="doctorSelectEast"
+                                                        name="doctorChoice"
+                                                        th:value="*{doctor.name}"
+                                                        class="form-control form-control-lg"
+                                                />
+                                                <button onclick = "selectClinicAndDoctor()" class="btn btn-primary"> Select </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(specialtyDoctorsSouth)}">
+                    <section class="vh-10 gradient-custom mt-4" id="doctorsTable02">
+                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                            <div class="card-body p-4 p-md-3 m-3">
+
+                                <h4 class = "jumbotron-heading">Clinic Southtown</h4>
+
+                                <table class="table">
+                                    <tr>
+                                        <th scope="col">Doctor Name</th>
+                                        <th scope="col">Specialties</th>
+                                        <th scope="col"></th>
+                                    </tr>
+
+                                    <tr th:each="doctor: ${specialtyDoctorsSouth}">
+                                        <td th:text="${doctor.name}"></td>
+                                        <td th:text="${doctor.specialties}"></td>
+                                        <td>
+                                            <form method="post" th:action="@{/post-select-clinic}">
+
+                                                <input
+                                                        type="hidden"
+                                                        id="clinicSelectSouth"
+                                                        name="clinicChoice"
+                                                        th:value="Southtown"
+                                                        class="form-control form-control-lg"
+                                                />
+                                                <input
+                                                        type="hidden"
+                                                        id="doctorSelectSouth"
+                                                        name="doctorChoice"
+                                                        th:value="*{doctor.name}"
+                                                        class="form-control form-control-lg"
+                                                />
+
+                                                <button onclick = "selectClinicAndDoctor()" class="btn btn-primary"> Select </button>
+
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(specialtyDoctorsWest)}">
+                    <section class="vh-10 gradient-custom mt-4" id="doctorsTable03">
+                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                            <div class="card-body p-4 p-md-3 m-3">
+
+                                <h4 class = "jumbotron-heading">Clinic Westshire</h4>
+
+                                <table class="table">
+                                    <tr>
+                                        <th scope="col">Doctor Name</th>
+                                        <th scope="col">Specialties</th>
+                                        <th scope="col"></th>
+                                    </tr>
+
+                                    <tr th:each="doctor: ${specialtyDoctorsWest}">
+                                        <td th:text="${doctor.name}"></td>
+                                        <td th:text="${doctor.specialties}"></td>
+                                        <td>
+                                            <form method="post" th:action="@{/post-select-clinic}">
+
+                                                <input
+                                                        type="hidden"
+                                                        id="clinicSelectWest"
+                                                        name="clinicChoice"
+                                                        th:value="Westshire"
+                                                        class="form-control form-control-lg"
+                                                />
+                                                <input
+                                                        type="hidden"
+                                                        id="doctorSelectWest"
+                                                        name="doctorChoice"
+                                                        th:value="*{doctor.name}"
+                                                        class="form-control form-control-lg"
+                                                />
+
+                                                <button onclick = "selectClinicAndDoctor()" class="btn btn-primary"> Select </button>
+
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class = "col-4 mt-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script th:src = "@{/js/myScripts04.js}"></script>
+
+  </body>
+</html>

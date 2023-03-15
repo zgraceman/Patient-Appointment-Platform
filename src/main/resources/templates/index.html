@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link th:href = "@{/css/mystyles.css}" rel="stylesheet">
+</head>
+  <body>
+
+    <!-- Responsive navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Medcare Booking System: Home Page </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="select-clinic">Select Clinic</a></li>
+                    <li class="nav-item"><a class="nav-link" href="patient-registration">Patient Registration</a></li>
+                    <li class="nav-item"><a class="nav-link" href="book-appointment">Book Appointment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment-confirmation">Appointment Confirmation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment-lookup">Lookup Your Appointment</a></li>
+                </ul>
+            </div>
+        </div>
+       </nav>
+
+    <section class = "jumbotron text-center mt-5">
+        <div class = "container">
+            <h1 class = "jumbotron-heading mt-2">Welcome to your Medcare Booking System!</h1>
+            <p class = "lead mt-4">
+                Our goal is to connect you with a specialized healthcare professional based on your specific health needs.
+            </p>
+            <p class = "lead">
+                Please begin by selecting the care service you need below.
+            </p>
+        </div>
+    </section>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <select id= "selectForm00" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option selected>Select a Specialty:</option>
+                    <option value="1">Cardiology</option>
+                    <option value="2">Dermatology</option>
+                    <option value="3">Endocrinology</option>
+                    <option value="4">Family Medicine</option>
+                    <option value="5">Gastroenterology</option>
+                    <option value="6">Neurology</option>
+                    <option value="7">Ophthalmology</option>
+                    <option value="8">Pediatrics</option>
+                    <option value="9">Podiatry</option>
+                    <option value="10">Sleep Medicine</option>
+                </select>
+            </div>
+            <div class = "col-4 mt-1">
+
+                <form method="post" th:action="@{/post-index}" th:object="${specialty}">
+                    <input
+                            type="hidden"
+                            id="specialtyInput"
+                            name="specialty"
+                            class="form-control form-control-lg"
+                    />
+                    <button onclick = "formOptionInput()" class="btn btn-primary" id="indexContinueButton"> Continue </button>
+                </form>
+            </div>
+
+            <div>
+                <h4 class="text-danger text-center"><span th:text="${insertedDanger}"></span></h4>
+            </div>
+
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+    <hr class="hr" />
+
+    <section class = "jumbotron text-center mt-4">
+        <div class = "container">
+            <p class = "lead">
+                Don't know what service you need?
+            </p>
+            <p class = "lead">
+               Select your symptoms below to find what care service will be best for you.
+            </p>
+        </div>
+    </section>
+
+
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <section class="vh-10 gradient-custom">
+                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                        <div class="card-body p-4 p-md-3">
+
+                            <div class="container-fluid" id="checkboxInput00">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                            <label class="form-check-label" for="inlineCheckbox1">Shortness of breath</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                            <label class="form-check-label" for="inlineCheckbox2">Chest pain or tightness</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
+                                            <label class="form-check-label" for="inlineCheckbox3">Acne breakouts</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="option5">
+                                            <label class="form-check-label" for="inlineCheckbox5">Dry or itchy skin </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="option6">
+                                            <label class="form-check-label" for="inlineCheckbox6">Thyroid/hormone concerns</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="option7">
+                                            <label class="form-check-label" for="inlineCheckbox7">Mild fever with fatigue</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="option8">
+                                            <label class="form-check-label" for="inlineCheckbox8">Digestive concerns</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox9" value="option9">
+                                            <label class="form-check-label" for="inlineCheckbox9">Chronic headaches</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox10" value="option10">
+                                            <label class="form-check-label" for="inlineCheckbox10">Stomach pain</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox11" value="option11">
+                                            <label class="form-check-label" for="inlineCheckbox11">Dizziness</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox12" value="option12">
+                                            <label class="form-check-label" for="inlineCheckbox12">Blurry Vision</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox13" value="option13">
+                                            <label class="form-check-label" for="inlineCheckbox13">Child health concerns</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox14" value="option14">
+                                            <label class="form-check-label" for="inlineCheckbox14">Foot or ankle injury</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox15" value="15">
+                                            <label class="form-check-label" for="inlineCheckbox15">Insomnia</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class = "col-4 mt-1">
+                <button onclick = "symptomCheckboxInput()" class="btn btn-primary"> Submit </button>
+                <br><br><br><br><br><br>
+                <button onclick = "refreshSymptomCheckboxInput()" class="btn btn-primary mt-2"> Refresh </button>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+
+                <section class="vh-100 gradient-custom d-none" id="result">
+                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                        <div class="card-body p-4 p-md-3">
+                            <p1 id = "symptom"></p1>
+                            <br class="d-none" id="br0">
+                            <p1 id = "symptom1"></p1>
+                            <br class="d-none" id="br1">
+                            <p1 id = "symptom2"></p1>
+                            <br class="d-none" id="br2">
+                            <p1 id = "symptom3"></p1>
+                            <br class="d-none" id="br3">
+                            <p1 id = "symptom4"></p1>
+                            <br class="d-none" id="br4">
+                            <p1 id = "symptom5"></p1>
+                            <br class="d-none" id="br5">
+                            <p1 id = "symptom6"></p1>
+                            <br class="d-none" id="br6">
+                            <p1 id = "symptom7"></p1>
+                            <br class="d-none" id="br7">
+                            <p1 id = "symptom8"></p1>
+                            <br class="d-none" id="br8">
+                            <p1 id = "symptom9"></p1>
+                            <br class="d-none" id="br9">
+                            <p1 id = "symptom10"></p1>
+                            <br class="d-none" id="br10">
+                            <p1 id = "symptom11"></p1>
+                            <br class="d-none" id="br11">
+                            <p1 id = "symptom12"></p1>
+                            <br class="d-none" id="br12">
+                            <p1 id = "symptom13"></p1>
+                            <br class="d-none" id="br13">
+                            <p1 id = "symptom14"></p1>
+                        </div>
+                    </div>
+                </section>
+
+                <div class = "col-4 mt-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid d-none">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <h2>Your care service is ...</h2>
+            </div>
+
+                <div class = "col-4 mt-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script th:src = "@{/js/myScripts04.js}"></script>
+
+  </body>
+</html>
