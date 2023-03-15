@@ -296,7 +296,7 @@ public class HomeController {
 
         log.warn("I am in the appointmentLookupPage controller method");
 
-        Appointment tempAppointment = appointmentRepoI.findById(1).get();
+        Appointment tempAppointment = new Appointment();
         System.out.println(tempAppointment);
 
         Integer id = 0;
@@ -306,6 +306,7 @@ public class HomeController {
         return "appointment-lookup";
     }
 
+    private Integer cancelID;
     @PostMapping(value = "/post-appointment-lookup")
     public String appointmentLookupProcess(@RequestParam(name = "12345", required = false) Integer id, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -335,6 +336,21 @@ public class HomeController {
         Appointment flashAppointment = appointmentRepoI.findById(id).get();
         redirectAttributes.addFlashAttribute("appointment", flashAppointment);
 
+        cancelID = id;
+
         return "redirect:appointment-lookup";
     }
+
+    @PostMapping(value = "/post-appointment-cancellation")
+    public String appointmentCancellationProcess() {
+
+        log.warn("I am in the appointmentCancellationProcess controller method");
+
+        System.out.println(cancelID);
+
+        appointmentRepoI.deleteById(cancelID);
+
+        return "appointment-lookup";
+    }
+
 }

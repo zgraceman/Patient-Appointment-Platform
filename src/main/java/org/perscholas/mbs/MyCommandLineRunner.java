@@ -12,6 +12,7 @@ import org.perscholas.mbs.models.Appointment;
 import org.perscholas.mbs.models.Doctor;
 import org.perscholas.mbs.models.Office;
 import org.perscholas.mbs.models.Patient;
+import org.perscholas.mbs.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -30,12 +31,15 @@ public class MyCommandLineRunner implements CommandLineRunner {
     PatientRepoI patientRepoI;
     AppointmentRepoI appointmentRepoI;
 
+    DoctorService doctorService;
+
     @Autowired
-    public MyCommandLineRunner(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, PatientRepoI patientRepoI, AppointmentRepoI appointmentRepoI) {
+    public MyCommandLineRunner(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, PatientRepoI patientRepoI, AppointmentRepoI appointmentRepoI, DoctorService doctorService) {
         this.doctorRepoI = doctorRepoI;
         this.officeRepoI = officeRepoI;
         this.patientRepoI = patientRepoI;
         this.appointmentRepoI = appointmentRepoI;
+        this.doctorService = doctorService;
     }
 
     @PostConstruct
@@ -78,6 +82,7 @@ public class MyCommandLineRunner implements CommandLineRunner {
         Doctor d8 = new Doctor(8, "Dr. Jones Bones", "Jones@gmail.com", specialtiesD8);
         doctorRepoI.saveAndFlush(d8);
 
+        doctorService.getDoctorEssentialInfo();
 
 
         Office o1 = new Office(1, "Northdale", "Wilson");
@@ -103,21 +108,23 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
 
-
-
         Date dobP1 = new Date(1999, 8, 14);
         Patient p1 = new Patient("Zachary Graceman", dobP1, "male", "zgman@gmail.com", "6129106192", 123456789);
         patientRepoI.saveAndFlush(p1);
 
+
+
         Date appointmentDateA1 = new Date(2023, 4, 1);
         String time = "";
-        Appointment a1 = new Appointment(1, appointmentDateA1, "Cardiology", time, d1, o1, p1);
+
+        Appointment a1 = new Appointment(appointmentDateA1, time, "Cardiology", d1, o1, p1);
         appointmentRepoI.saveAndFlush(a1);
 
-        Appointment a2 = new Appointment(2, appointmentDateA1, "Cardiology", time, d2, o2, p1);
+        Appointment a2 = new Appointment(2, appointmentDateA1, time, "Cardiology", d2, o2, p1);
         appointmentRepoI.saveAndFlush(a2);
 
-
+        Appointment a3 = new Appointment(3, appointmentDateA1, time, "Dermatology", d3, o2, p1);
+        appointmentRepoI.saveAndFlush(a3);
 
     }
 }

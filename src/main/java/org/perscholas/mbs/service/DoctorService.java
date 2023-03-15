@@ -6,6 +6,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.perscholas.mbs.dao.DoctorRepoI;
 import org.perscholas.mbs.dao.PatientRepoI;
+import org.perscholas.mbs.dto.DoctorDTO;
+import org.perscholas.mbs.dto.OfficeDTO;
 import org.perscholas.mbs.models.Doctor;
 import org.perscholas.mbs.models.Office;
 import org.perscholas.mbs.models.Patient;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -69,5 +72,12 @@ public class DoctorService {
         }
 
         return specialtyDoctors;
+    }
+
+    public List<DoctorDTO> getDoctorEssentialInfo() {
+
+        return doctorRepoI.findAll().stream().map((oneDoctor) -> {
+            return new DoctorDTO(oneDoctor.getId(), oneDoctor.getName());
+        }).collect(Collectors.toList());
     }
 }

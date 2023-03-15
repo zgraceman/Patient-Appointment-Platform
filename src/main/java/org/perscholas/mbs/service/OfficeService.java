@@ -6,6 +6,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.perscholas.mbs.dao.DoctorRepoI;
 import org.perscholas.mbs.dao.OfficeRepoI;
+import org.perscholas.mbs.dto.OfficeDTO;
+import org.perscholas.mbs.dto.PatientDTO;
 import org.perscholas.mbs.models.Doctor;
 import org.perscholas.mbs.models.Office;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,4 +82,14 @@ public class OfficeService {
 
         return specialtyOffices;
     }
+
+    public List<OfficeDTO> getOfficeEssentialInfo() {
+
+        return officeRepoI.findAll().stream().map((oneOffice) -> {
+            return new OfficeDTO(oneOffice.getId(), oneOffice.getName());
+        }).collect(Collectors.toList());
+
+    }
+
+
 }

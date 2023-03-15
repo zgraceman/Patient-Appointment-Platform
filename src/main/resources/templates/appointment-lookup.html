@@ -164,8 +164,21 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </form>
+
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <p class = "text-danger mt-2">No longer require this appointment? Use the following button.</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <form method="post" th:action="@{/post-appointment-cancellation}" th:object="${id}">
+                                            <div class="form-outline">
+                                                <button type="submit" class="btn btn-sm btn-danger">Cancel Appointment</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

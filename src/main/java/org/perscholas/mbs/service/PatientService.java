@@ -5,11 +5,13 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.perscholas.mbs.dao.PatientRepoI;
+import org.perscholas.mbs.dto.PatientDTO;
 import org.perscholas.mbs.models.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -33,5 +35,13 @@ public class PatientService {
         }
 
         return patients;
+    }
+
+    public List<PatientDTO> getPatientEssentialInfo() {
+
+        return patientRepoI.findAll().stream().map((onePatient) -> {
+            return new PatientDTO(onePatient.getId(), onePatient.getFullName(), onePatient.getDob());
+        }).collect(Collectors.toList());
+
     }
 }
