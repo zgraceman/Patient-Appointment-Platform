@@ -4,14 +4,8 @@ import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.perscholas.mbs.dao.AppointmentRepoI;
-import org.perscholas.mbs.dao.DoctorRepoI;
-import org.perscholas.mbs.dao.OfficeRepoI;
-import org.perscholas.mbs.dao.PatientRepoI;
-import org.perscholas.mbs.models.Appointment;
-import org.perscholas.mbs.models.Doctor;
-import org.perscholas.mbs.models.Office;
-import org.perscholas.mbs.models.Patient;
+import org.perscholas.mbs.dao.*;
+import org.perscholas.mbs.models.*;
 import org.perscholas.mbs.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -33,13 +27,16 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
     DoctorService doctorService;
 
+    AuthGroupRepoI authGroupRepoI;
+
     @Autowired
-    public MyCommandLineRunner(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, PatientRepoI patientRepoI, AppointmentRepoI appointmentRepoI, DoctorService doctorService) {
+    public MyCommandLineRunner(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, PatientRepoI patientRepoI, AppointmentRepoI appointmentRepoI, DoctorService doctorService, AuthGroupRepoI authGroupRepoI) {
         this.doctorRepoI = doctorRepoI;
         this.officeRepoI = officeRepoI;
         this.patientRepoI = patientRepoI;
         this.appointmentRepoI = appointmentRepoI;
         this.doctorService = doctorService;
+        this.authGroupRepoI = authGroupRepoI;
     }
 
     @PostConstruct
@@ -49,6 +46,13 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        Patient user = new Patient("User", "User@gmail.com", "password");
+        patientRepoI.saveAndFlush(user);
+
+        authGroupRepoI.saveAndFlush(new AuthGroup("User@gmail.com", "ROLE_USER"));
+
+
 
         List<String> specialtiesD1 = new ArrayList<>(Arrays.asList("Cardiology", "Dermatology", "Endocrinology"));
         Doctor d1 = new Doctor(1, "Dr. Bill Nye", "Bill@gmail.com", specialtiesD1);
@@ -109,7 +113,7 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
         Date dobP1 = new Date(1999, 8, 14);
-        Patient p1 = new Patient("Zachary Graceman", dobP1, "male", "zgman@gmail.com", "6129106192", 123456789);
+        Patient p1 = new Patient("Zachary Graceman", dobP1, "male", "zgman@gmail.com", "6129106192", 123456789, "nada");
         patientRepoI.saveAndFlush(p1);
 
 

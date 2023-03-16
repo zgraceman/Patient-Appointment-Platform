@@ -35,7 +35,7 @@ import java.util.Optional;
 
 @Controller
 @Slf4j
-public class HomeController {
+public class  HomeController {
 
     private final PatientRepoI patientRepoI;
     private final DoctorRepoI doctorRepoI;
@@ -69,7 +69,22 @@ public class HomeController {
         this.appointmentService = appointmentService;
     }
 
-    @GetMapping(value = {"/", "index"})
+    @GetMapping(value = "/login")
+    public String loginPage() {
+
+        log.warn("I am in the loginPage controller method");
+
+        return "login-page";
+    }
+
+    @PostMapping("/post-login")
+    public String loginProcess() {
+        log.warn("I am in the post-login controller method");
+
+        return "redirect:index";
+    }
+
+    @GetMapping(value = {"/", "/index"})
     public String homePage(Model model) {
 
         log.warn("I am in the index controller method");
@@ -100,7 +115,7 @@ public class HomeController {
         }
     }
 
-    @GetMapping(value = "select-clinic")
+    @GetMapping(value = "/select-clinic")
     public String selectClinicPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
 
         log.warn("I am in the select-clinic controller method");

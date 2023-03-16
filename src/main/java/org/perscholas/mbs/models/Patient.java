@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -50,12 +51,28 @@ public class Patient {
     @NonNull
     int ssn;
 
-    public Patient(@NonNull String fullName, @NonNull @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob, @NonNull String gender, @NonNull String email, @NonNull String phoneNumber, @NonNull int ssn) {
+    @Setter(AccessLevel.NONE)
+    String password;
+
+    public String setPassword(String password) {
+       return this.password = new BCryptPasswordEncoder().encode(password);
+    }
+
+    public Patient(String fullName, String email, String password) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+    }
+
+    public Patient(@NonNull String fullName, @NonNull @DateTimeFormat(pattern = "yyyy-MM-dd") Date dob, @NonNull String gender, @NonNull String email, @NonNull String phoneNumber, @NonNull int ssn, String password){
         this.fullName = fullName;
         this.dob = dob;
         this.gender = gender;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.ssn = ssn;
+        this.password = setPassword(password);
     }
+
+
 }
