@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface PatientRepoI extends JpaRepository<Patient, Integer> {
     Optional<Patient> findByEmailAllIgnoreCase(String email);
+
+    //Optional<Patient> findByName(String name);
 }
