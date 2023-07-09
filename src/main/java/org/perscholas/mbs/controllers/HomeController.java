@@ -161,13 +161,15 @@ public class  HomeController {
     }
 
     /**
+     * GET handler for "/select-clinic".
+     *
      * Method to prepare and display the clinic selection page. If no specialty is selected, redirects to index.
      * Collects and adds doctors per office to the model using the selected specialty.
      *
      * @param model Spring-provided Model for adding attributes to be accessed in the view.
      * @param redirectAttributes Used for session attributes after redirect, e.g., warning message.
-     * @return Redirect instruction or name of the view to render.
      * @throws Exception If there's an error retrieving the list of all offices.
+     * @return Redirect instruction or name of the view to render.
      */
     @GetMapping(value = "/select-clinic")
     public String selectClinicPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
@@ -196,6 +198,17 @@ public class  HomeController {
         return "select-clinic";
     }
 
+    /**
+     * HTTP POST handler for the "/post-select-clinic" endpoint.
+     *
+     * Method to process the clinic and doctor chosen by the user from the clinic selection page.
+     * The chosen clinic and doctor are stored in `selectedOffice` and `selectedDoctor` respectively
+     * for later use.
+     *
+     * @param clinic The name of the selected clinic sent as a request parameter.
+     * @param doctorName The name of the selected doctor sent as a request parameter.
+     * @return A redirect instruction to the patient registration page.
+     */
     @PostMapping("/post-select-clinic")
     public String selectClinicProcess(@RequestParam(name = "clinicChoice") String clinic, @RequestParam(name = "doctorChoice") String doctorName) {
 
@@ -207,6 +220,19 @@ public class  HomeController {
         return "redirect:patient-registration";
     }
 
+    /**
+     * HTTP GET handler for the "patient-registration" endpoint.
+     *
+     * Method to display the patient registration page. Also adds a new Patient object to the model under the attribute
+     * "patient", which is used in the view to bind form data.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
+     *                           can be used after a redirect. In this case, it's used to add a warning message
+     *                           when no specialty or doctor has been selected.
+     * @return The name of the view to be rendered, or redirect instruction.
+     */
     @GetMapping(value = "patient-registration")
     public String patientRegistrationPage(Model model, RedirectAttributes redirectAttributes) {
 
@@ -229,6 +255,23 @@ public class  HomeController {
         return "patient-registration";
     }
 
+    /**
+     * HTTP POST handler for the "/post-patient-registration" endpoint.
+     *
+     * Method to the form data of a new patient. The Patient object is automatically populated with the form data and
+     * validated. If there are validation errors, the user is returned to the patient registration page.
+     *
+     * If the Patient object is valid, it's saved to the database and also stored in the `registeredPatient`
+     * instance variable for later use.
+     *
+     * @param patient A Patient object, annotated with @Valid to enable validation and @ModelAttribute to indicate
+     *                that it should be populated with form data.
+     * @param bindingResult The BindingResult object contains the results of the validation. It's automatically
+     *                      populated by Spring when the method is called.
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes to the
+     *              model, which are then accessible in the view.
+     * @return The name of the view to be rendered, or a redirect instruction if the Patient object is valid.
+     */
     @PostMapping("/post-patient-registration")
     public String patientProcess(@Valid @ModelAttribute("patient") Patient patient, BindingResult bindingResult, Model model) {
 
