@@ -33,10 +33,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * HomeController is the main controller for the medical booking system web application.
+ * This class handles web requests and responses, manages data flow and business logic.
+ * It has fields to hold information throughout the flow of the application, including selected specialty, selected office,
+ * selected doctor, registered patient, selected date and time, and building appointment.
+ */
 @Controller
 @Slf4j
 public class  HomeController {
 
+    // Injecting the necessary services and repositories
     private final PatientRepoI patientRepoI;
     private final DoctorRepoI doctorRepoI;
     private final OfficeRepoI officeRepoI;
@@ -47,6 +54,7 @@ public class  HomeController {
     private final OfficeService officeService;
     private final AppointmentService appointmentService;
 
+    // Fields to hold information throughout the flow of the application
     private String selectedSpecialty = "";
     private Office selectedOffice = new Office();
     private Doctor selectedDoctor = new Doctor();
@@ -55,7 +63,19 @@ public class  HomeController {
     private String selectedTime = null;
     private Appointment buildingAppointment = new Appointment();
 
-
+    /**
+     * Constructor for HomeController. Initializes all repository interfaces and service classes via dependency injection.
+     * Dependency injection allows the Spring framework to automatically manage the lifecycle of the dependencies.
+     *
+     * @param doctorRepoI The repository for handling database operations related to doctors.
+     * @param officeRepoI The repository for handling database operations related to offices.
+     * @param patientRepoI The repository for handling database operations related to patients.
+     * @param appointmentRepoI The repository for handling database operations related to appointments.
+     * @param patientService The service class encapsulating business logic related to patients.
+     * @param doctorService The service class encapsulating business logic related to doctors.
+     * @param officeService The service class encapsulating business logic related to offices.
+     * @param appointmentService The service class encapsulating business logic related to appointments.
+     */
     @Autowired
     public HomeController(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, PatientRepoI patientRepoI, AppointmentRepoI appointmentRepoI,
                           PatientService patientService, DoctorService doctorService, OfficeService officeService, AppointmentService appointmentService) {
@@ -69,6 +89,11 @@ public class  HomeController {
         this.appointmentService = appointmentService;
     }
 
+    /**
+     * Method to display login page.
+     *
+     * @return The name of the login page view to be rendered.
+     */
     @GetMapping(value = "/login")
     public String loginPage() {
 
@@ -77,6 +102,11 @@ public class  HomeController {
         return "login-page";
     }
 
+    /**
+     * Method to handle login request.
+     *
+     * @return The path to redirect to after successful login.
+     */
     @PostMapping("/post-login")
     public String loginProcess() {
         log.warn("I am in the post-login controller method");
@@ -84,6 +114,12 @@ public class  HomeController {
         return "redirect:index";
     }
 
+    /**
+     * Method to display home page.
+     *
+     * @param model The model object to hold attributes that are used in the view.
+     * @return The name of the home page view to be rendered.
+     */
     @GetMapping(value = {"/", "/index"})
     public String homePage(Model model) {
 
@@ -97,6 +133,14 @@ public class  HomeController {
         return "index";
     }
 
+    /**
+     * Method to handle post request from index page.
+     *
+     * @param specialty The specialty selected by the user.
+     * @param model The model object to hold attributes that are used in the view.
+     * @param redirectAttributes Object for specifying attributes for redirect scenarios.
+     * @return The path to redirect to based on whether a specialty was selected or not.
+     */
     @PostMapping("/post-index")
     public String indexProcess(@ModelAttribute("specialty") String specialty, Model model, RedirectAttributes redirectAttributes) {
 
@@ -104,6 +148,7 @@ public class  HomeController {
 
         selectedSpecialty = specialty;
 
+        // Redirects back to the index page if no specialty is selected.
         if (selectedSpecialty.isEmpty()) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
@@ -115,6 +160,15 @@ public class  HomeController {
         }
     }
 
+    /**
+     * Method to prepare and display the clinic selection page. If no specialty is selected, redirects to index.
+     * Collects and adds doctors per office to the model using the selected specialty.
+     *
+     * @param model Spring-provided Model for adding attributes to be accessed in the view.
+     * @param redirectAttributes Used for session attributes after redirect, e.g., warning message.
+     * @return Redirect instruction or name of the view to render.
+     * @throws Exception If there's an error retrieving the list of all offices.
+     */
     @GetMapping(value = "/select-clinic")
     public String selectClinicPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -367,5 +421,4 @@ public class  HomeController {
 
         return "appointment-lookup";
     }
-
 }
