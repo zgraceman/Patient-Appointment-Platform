@@ -1,3 +1,26 @@
+/*
+TODO:
+1. Create separate controllers for separate functionalities: Split the HomeController into separate controllers
+like LoginController, RegistrationController, and AppointmentController to improve manageability and readability.
+
+2. Refactor repetitive logic into methods: Extract repetitive checks (like specialty, doctor, patient null/empty
+checks) into separate methods to reduce code duplication and enhance readability.
+
+3. Avoid using `System.out.println`: Use the existing logging framework SLF4J for logging instead. It provides more
+options and is more appropriate in a professional setting.
+
+4. Use Lombok annotations to reduce boilerplate code: Implement Lombok's `@Getter`, `@Setter`, `@AllArgsConstructor`,
+`@NoArgsConstructor`, etc., to reduce boilerplate code in classes.
+
+5. Use services for business logic: Implement business logic in the service layer and access repositories through
+services from the controller, instead of accessing repositories directly in the controller. This helps to keep the
+controller lean and focused on directing HTTP requests.
+
+6. Use Spring's ResponseEntity: Use `ResponseEntity` for more control over HTTP responses, instead of returning a
+string value for redirection.
+
+*/
+
 package org.perscholas.mbs.controllers;
 
 import jakarta.validation.Valid;
