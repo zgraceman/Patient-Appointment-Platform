@@ -258,7 +258,7 @@ public class  HomeController {
     /**
      * HTTP POST handler for the "/post-patient-registration" endpoint.
      *
-     * Method to the form data of a new patient. The Patient object is automatically populated with the form data and
+     * Method for processing the form data of a new patient. The Patient object is automatically populated with the form data and
      * validated. If there are validation errors, the user is returned to the patient registration page.
      *
      * If the Patient object is valid, it's saved to the database and also stored in the `registeredPatient`
@@ -291,6 +291,24 @@ public class  HomeController {
         return "redirect:book-appointment";
     }
 
+    /**
+     * HTTP GET handler for the "/book-appointment" endpoint.
+     *le for
+     * Method responsible for rendering the page to book an appointment.
+     * It checks that a specialty, doctor, and patient have been selected, redirecting the user with a warning
+     * message to the appropriate page if any are missing.
+     *
+     * An Appointment object is instantiated with the selected specialty, doctor, and office, as well as the registered patient,
+     * and added to the model under the attribute "appointment". This can be accessed in the view to display the
+     * relevant data to the user.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes to
+     *              the model, which are then accessible in the view.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that can be used
+     *                           after a redirect. In this case, it's used to add a warning message when no specialty, doctor or patient has been selected.
+     * @return The name of the view to be rendered, or a redirect instruction if no specialty, doctor or patient has been selected.
+     * @throws Exception Throws an Exception if there's an issue building the Appointment object.
+     */
     @GetMapping(value = "book-appointment")
     public String bookAppointmentPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -323,6 +341,23 @@ public class  HomeController {
         return "book-appointment";
     }
 
+    /**
+     * HTTP POST handler for the "/post-book-appointment" endpoint.
+     *
+     * This method is responsible for processing the appointment booking form.
+     * If the BindingResult has errors, it redirects the user back to the booking page with the incomplete Appointment object
+     * and a warning message.
+     * It also checks that the selected date is not before the current date, redirecting with a warning if it is.
+     *
+     * The method updates the buildingAppointment object with the builtAppointment's date and time, and stores these in separate variables
+     * for further use. Once all checks have passed, the user is redirected to the appointment confirmation page.
+     *
+     * @param builtAppointment The built Appointment object, constructed from the form data by Spring.
+     * @param bindingResult The BindingResult object that contains the result of the validation and binding from the form.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that can be used after a redirect.
+     *                           In this case, it's used to add a warning message and the incomplete Appointment object when there are errors.
+     * @return The redirect instruction to the next page in the flow, or back to the booking page if there are errors.
+     */
     @PostMapping(value = "/post-book-appointment")
     public String bookAppointmentProcess(@Valid @ModelAttribute("appointment") Appointment builtAppointment, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
@@ -352,6 +387,24 @@ public class  HomeController {
         return "redirect:appointment-confirmation";
     }
 
+    /**
+     * HTTP GET handler for the "/appointment-confirmation" endpoint.
+     *
+     * This method is responsible for displaying the appointment confirmation page.
+     * Prior to rendering the confirmation page, the method performs several checks
+     * to ensure that a specialty, doctor, patient, and appointment date & time have been selected.
+     * If any of these elements are missing, the user is redirected back to the appropriate page with a warning message.
+     *
+     * If all the necessary elements are present, a final Appointment object is created and saved to the database.
+     * This final Appointment object is added to the model and passed to the view for confirmation.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that can be used
+     *                           after a redirect. In this case, it's used to add a warning message when any necessary element is missing.
+     * @return The name of the view to be rendered, or a redirect instruction if any necessary element is missing.
+     * @throws Exception Throws an Exception if there's an issue creating the Appointment object or saving it to the database.
+     */
     @GetMapping(value = "appointment-confirmation")
     public String appointmentConfirmationPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -395,6 +448,16 @@ public class  HomeController {
         return "appointment-confirmation";
     }
 
+    /**
+     * HTTP POST handler for the "/post-appointment-confirmation" endpoint.
+     *
+     * This method is responsible for processing the confirmation of an appointment.
+     * Currently, it doesn't have any specific functionality or validation and simply redirects to the "/post-appointment-confirmation" endpoint.
+     *
+     * Future enhancements might include sending an email confirmation, updating appointment status in the database, or other related actions.
+     *
+     * @return The redirect instruction to the "/post-appointment-confirmation" endpoint.
+     */
     @PostMapping(value = "/post-appointment-confirmation")
     public String appointmentConfirmationProcess() {
 
@@ -403,6 +466,18 @@ public class  HomeController {
         return "/post-appointment-confirmation";
     }
 
+    /**
+     * HTTP GET handler for the "/appointment-lookup" endpoint.
+     *
+     * This method is responsible for displaying the appointment lookup page.
+     * It creates a temporary Appointment object for debugging purposes and prints it to the console.
+     * It also adds a temporary "id" attribute to the model with a value of 0. This id could be used in the view
+     * to display a form field for user input or for other purposes.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @return The name of the view to be rendered, in this case "appointment-lookup".
+     */
     @GetMapping(value = "appointment-lookup")
     public String appointmentLookupPage(Model model) {
 
@@ -419,6 +494,25 @@ public class  HomeController {
     }
 
     private Integer cancelID;
+
+    /**
+     * HTTP POST handler for the "/post-appointment-lookup" endpoint.
+     *
+     * This method is responsible for processing the appointment lookup form submission.
+     * It first checks if the input (id) is null, if so, it redirects back to the appointment lookup page with a warning message.
+     *
+     * It retrieves all the appointments and validates the entered id. If the id is not valid (i.e. there is no appointment with that id),
+     * it redirects back to the appointment lookup page with an error message.
+     *
+     * If the id is valid, it fetches the corresponding appointment and adds it as a flash attribute to be used after the redirect.
+     * It also stores the id in a private field, 'cancelID', for further processing.
+     *
+     * @param id The id of the appointment the user wants to lookup, obtained from the form submission.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that can be used
+     *                           after a redirect. In this case, it's used to add a warning message when no id is entered or if no appointment exists for the entered id.
+     * @return A redirect instruction back to the appointment lookup page, with the relevant flash attributes added.
+     * @throws Exception Throws an Exception if there's an issue getting the list of all appointments.
+     */
     @PostMapping(value = "/post-appointment-lookup")
     public String appointmentLookupProcess(@RequestParam(name = "12345", required = false) Integer id, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -453,6 +547,15 @@ public class  HomeController {
         return "redirect:appointment-lookup";
     }
 
+    /**
+     * HTTP POST handler for the "/post-appointment-cancellation" endpoint.
+     *
+     * This method is responsible for handling the cancellation of appointments.
+     * It uses the 'cancelID' field, which should have been previously set by a successful call to the 'appointmentLookupProcess' method,
+     * to identify which appointment to delete.
+     *
+     * @return The name of the view to be rendered after the appointment is cancelled, in this case the 'appointment-lookup' page.
+     */
     @PostMapping(value = "/post-appointment-cancellation")
     public String appointmentCancellationProcess() {
 
