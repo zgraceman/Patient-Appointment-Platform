@@ -113,31 +113,6 @@ public class  HomeController {
     }
 
     /**
-     * Method to display login page.
-     *
-     * @return The name of the login page view to be rendered.
-     */
-    @GetMapping(value = "/login")
-    public String loginPage() {
-
-        log.warn("I am in the loginPage controller method");
-
-        return "login-page";
-    }
-
-    /**
-     * Method to handle login request.
-     *
-     * @return The path to redirect to after successful login.
-     */
-    @PostMapping("/post-login")
-    public String loginProcess() {
-        log.warn("I am in the post-login controller method");
-
-        return "redirect:index";
-    }
-
-    /**
      * Method to display home page.
      *
      * @param model The model object to hold attributes that are used in the view.
