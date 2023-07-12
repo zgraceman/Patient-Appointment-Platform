@@ -23,9 +23,11 @@ string value for redirection.
 
 package org.perscholas.mbs.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.perscholas.mbs.dao.AppointmentRepoI;
 import org.perscholas.mbs.dao.DoctorRepoI;
@@ -67,12 +69,10 @@ import java.util.Optional;
 public class  HomeController {
 
     // Injecting the necessary services and repositories
-    private final PatientRepoI patientRepoI;
     private final DoctorRepoI doctorRepoI;
     private final OfficeRepoI officeRepoI;
     private final AppointmentRepoI appointmentRepoI;
 
-    private final PatientService patientService;
     private final DoctorService doctorService;
     private final OfficeService officeService;
     private final AppointmentService appointmentService;
@@ -92,21 +92,19 @@ public class  HomeController {
      *
      * @param doctorRepoI The repository for handling database operations related to doctors.
      * @param officeRepoI The repository for handling database operations related to offices.
-     * @param patientRepoI The repository for handling database operations related to patients.
+     * patientRepoI The repository for handling database operations related to patients.
      * @param appointmentRepoI The repository for handling database operations related to appointments.
-     * @param patientService The service class encapsulating business logic related to patients.
+     * patientService The service class encapsulating business logic related to patients.
      * @param doctorService The service class encapsulating business logic related to doctors.
      * @param officeService The service class encapsulating business logic related to offices.
      * @param appointmentService The service class encapsulating business logic related to appointments.
      */
     @Autowired
-    public HomeController(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, PatientRepoI patientRepoI, AppointmentRepoI appointmentRepoI,
-                          PatientService patientService, DoctorService doctorService, OfficeService officeService, AppointmentService appointmentService) {
+    public HomeController(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, AppointmentRepoI appointmentRepoI,
+                          DoctorService doctorService, OfficeService officeService, AppointmentService appointmentService) {
         this.doctorRepoI = doctorRepoI;
         this.officeRepoI = officeRepoI;
-        this.patientRepoI = patientRepoI;
         this.appointmentRepoI = appointmentRepoI;
-        this.patientService = patientService;
         this.doctorService = doctorService;
         this.officeService = officeService;
         this.appointmentService = appointmentService;
@@ -123,8 +121,7 @@ public class  HomeController {
 
         log.warn("I am in the index controller method");
 
-        String specialty = "specialty placeholder";
-        model.addAttribute("specialty", specialty);
+        model.addAttribute("specialty", "");
 
         // Validation: Cannot "continue" unless a specialty is selected
 
@@ -139,16 +136,20 @@ public class  HomeController {
      * @param redirectAttributes Object for specifying attributes for redirect scenarios.
      * @return The path to redirect to based on whether a specialty was selected or not.
      */
+    // ! is this whole method redundant?
     @PostMapping("/post-index")
-    public String indexProcess(@ModelAttribute("specialty") String specialty, Model model, RedirectAttributes redirectAttributes) {
+    public String indexProcess(@ModelAttribute("specialty") String specialty, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
         log.warn("I am in the indexProcess controller method");
+        System.out.println("specialty: " + specialty);
+        System.out.println("selectedSpecialty: " + selectedSpecialty);
 
+        session.setAttribute("specialty", specialty);
         selectedSpecialty = specialty;
 
         // Redirects back to the index page if no specialty is selected.
         if (selectedSpecialty.isEmpty()) {
-            log.warn("Specialty is empty! Returning to index");
+            log.warn("Specialty is empty! (No specialty selected) Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
@@ -170,9 +171,11 @@ public class  HomeController {
      * @return Redirect instruction or name of the view to render.
      */
     @GetMapping(value = "/select-clinic")
-    public String selectClinicPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
+    public String selectClinicPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) throws Exception {
 
         log.warn("I am in the select-clinic controller method");
+        System.out.println("specialty: " + session.getAttribute("specialty"));
+        System.out.println("selectedSpecialty: " + selectedSpecialty);
 
         if (selectedSpecialty.isEmpty()) {
             log.warn("Specialty is empty! Returning to index");
@@ -218,99 +221,12 @@ public class  HomeController {
         return "redirect:patient-registration";
     }
 
-    /**
-     * HTTP GET handler for the "patient-registration" endpoint.
-     *
-     * Method to display the patient registration page. Also adds a new Patient object to the model under the attribute
-     * "patient", which is used in the view to bind form data.
-     *
-     * @param model The Model object is automatically provided by Spring and can be used to add attributes
-     *              to the model, which are then accessible in the view.
-     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
-     *                           can be used after a redirect. In this case, it's used to add a warning message
-     *                           when no specialty or doctor has been selected.
-     * @return The name of the view to be rendered, or redirect instruction.
-     */
-    @GetMapping(value = "patient-registration")
-    public String patientRegistrationPage(Model model, RedirectAttributes redirectAttributes) {
 
-        log.warn("I am in the patient-registration controller method");
-
-        if (selectedSpecialty.isEmpty()) {
-            log.warn("Specialty is empty! Returning to index");
-            redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
-            return "redirect:index";
-        }
-
-        if (selectedDoctor.getName() == null) {
-            log.warn("Doctor is Empty! Returning to select-clinic");
-            redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
-            return "redirect:select-clinic";
-        }
-
-        model.addAttribute("patient", new Patient());
-
-        return "patient-registration";
-    }
-
-    /**
-     * HTTP POST handler for the "/post-patient-registration" endpoint.
-     *
-     * Method for processing the form data of a new patient. The Patient object is automatically populated with the form data and
-     * validated. If there are validation errors, the user is returned to the patient registration page.
-     *
-     * If the Patient object is valid, it's saved to the database and also stored in the `registeredPatient`
-     * instance variable for later use.
-     *
-     * @param patient A Patient object, annotated with @Valid to enable validation and @ModelAttribute to indicate
-     *                that it should be populated with form data.
-     * @param bindingResult The BindingResult object contains the results of the validation. It's automatically
-     *                      populated by Spring when the method is called.
-     * @param model The Model object is automatically provided by Spring and can be used to add attributes to the
-     *              model, which are then accessible in the view.
-     * @return The name of the view to be rendered, or a redirect instruction if the Patient object is valid.
-     */
-    @PostMapping("/post-patient-registration")
-    public String patientProcess(@Valid @ModelAttribute("patient") Patient patient, BindingResult bindingResult, Model model) {
-
-        log.warn("I am in the patientProcess controller method");
-
-        if (bindingResult.hasErrors()) {
-            log.debug(bindingResult.getAllErrors().toString());
-            return "patient-registration";
-        }
-
-        patientRepoI.saveAndFlush(patient);
-        log.warn(patient.toString());
-
-        registeredPatient = patient;
-
-
-        return "redirect:book-appointment";
-    }
-
-    /**
-     * HTTP GET handler for the "/book-appointment" endpoint.
-     *le for
-     * Method responsible for rendering the page to book an appointment.
-     * It checks that a specialty, doctor, and patient have been selected, redirecting the user with a warning
-     * message to the appropriate page if any are missing.
-     *
-     * An Appointment object is instantiated with the selected specialty, doctor, and office, as well as the registered patient,
-     * and added to the model under the attribute "appointment". This can be accessed in the view to display the
-     * relevant data to the user.
-     *
-     * @param model The Model object is automatically provided by Spring and can be used to add attributes to
-     *              the model, which are then accessible in the view.
-     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that can be used
-     *                           after a redirect. In this case, it's used to add a warning message when no specialty, doctor or patient has been selected.
-     * @return The name of the view to be rendered, or a redirect instruction if no specialty, doctor or patient has been selected.
-     * @throws Exception Throws an Exception if there's an issue building the Appointment object.
-     */
     @GetMapping(value = "book-appointment")
-    public String bookAppointmentPage(Model model, RedirectAttributes redirectAttributes) throws Exception {
+    public String bookAppointmentPage(Model model, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
 
         log.warn("I am in the book-appointment controller method");
+        registeredPatient = (Patient) session.getAttribute("registeredPatient");
 
         if (selectedSpecialty.isEmpty()) {
             log.warn("Specialty is empty! Returning to index");
