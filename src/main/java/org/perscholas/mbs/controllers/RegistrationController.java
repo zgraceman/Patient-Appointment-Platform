@@ -51,10 +51,9 @@ public class RegistrationController {
         log.warn("I am in the patient-registration controller method");
         String selectedSpecialty = (String) session.getAttribute("specialty");
 
-        System.out.println("specialty: " + session.getAttribute("specialty"));
         System.out.println("selectedSpecialty: " + selectedSpecialty);
 
-        if (selectedSpecialty.isEmpty()) {
+        if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
@@ -90,7 +89,7 @@ public class RegistrationController {
      * @return The name of the view to be rendered, or a redirect instruction if the Patient object is valid.
      */
     @PostMapping("/post-patient-registration")
-    public String patientProcess(@Valid @ModelAttribute("patient") Patient patient, HttpSession session, BindingResult bindingResult, Model model) {
+    public String patientProcess(@Valid @ModelAttribute("patient") Patient patient, BindingResult bindingResult, HttpSession session, Model model) {
 
         log.warn("I am in the patientProcess controller method");
 
@@ -103,7 +102,6 @@ public class RegistrationController {
         log.warn(patient.toString());
 
         session.setAttribute("registeredPatient", patient);
-
 
         return "redirect:book-appointment";
     }
