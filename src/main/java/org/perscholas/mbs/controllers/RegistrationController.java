@@ -49,7 +49,7 @@ public class RegistrationController {
     public String patientRegistrationPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
         log.warn("I am in the patient-registration controller method");
-        String selectedSpecialty = (String) session.getAttribute("specialty");
+        String selectedSpecialty = (String) session.getAttribute("selectedSpecialty");
 
         System.out.println("selectedSpecialty: " + selectedSpecialty);
 
@@ -99,8 +99,9 @@ public class RegistrationController {
         }
 
         patientRepoI.saveAndFlush(patient);
-        log.warn(patient.toString());
+        System.out.println(patient.toString());
 
+        // TODO: use database for registeredPatient instead of using HttpSession - maybe
         session.setAttribute("registeredPatient", patient);
 
         return "redirect:book-appointment";
