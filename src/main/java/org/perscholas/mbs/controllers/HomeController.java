@@ -71,20 +71,12 @@ public class  HomeController {
     // Injecting the necessary services and repositories
     private final DoctorRepoI doctorRepoI;
     private final OfficeRepoI officeRepoI;
-    private final AppointmentRepoI appointmentRepoI;
 
     private final DoctorService doctorService;
     private final OfficeService officeService;
-    private final AppointmentService appointmentService;
 
     // Fields to hold information throughout the flow of the application
     private String selectedSpecialty = "";
-    private Office selectedOffice = new Office();
-    private Doctor selectedDoctor = new Doctor();
-    private Patient registeredPatient = new Patient();
-    private Date selectedDate = new Date();
-    private String selectedTime = null;
-    private Appointment buildingAppointment = new Appointment();
 
     /**
      * Constructor for HomeController. Initializes all repository interfaces and service classes via dependency injection.
@@ -93,21 +85,18 @@ public class  HomeController {
      * @param doctorRepoI The repository for handling database operations related to doctors.
      * @param officeRepoI The repository for handling database operations related to offices.
      * patientRepoI The repository for handling database operations related to patients.
-     * @param appointmentRepoI The repository for handling database operations related to appointments.
+     * appointmentRepoI The repository for handling database operations related to appointments.
      * patientService The service class encapsulating business logic related to patients.
      * @param doctorService The service class encapsulating business logic related to doctors.
      * @param officeService The service class encapsulating business logic related to offices.
-     * @param appointmentService The service class encapsulating business logic related to appointments.
+     * appointmentService The service class encapsulating business logic related to appointments.
      */
     @Autowired
-    public HomeController(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, AppointmentRepoI appointmentRepoI,
-                          DoctorService doctorService, OfficeService officeService, AppointmentService appointmentService) {
+    public HomeController(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, DoctorService doctorService, OfficeService officeService) {
         this.doctorRepoI = doctorRepoI;
         this.officeRepoI = officeRepoI;
-        this.appointmentRepoI = appointmentRepoI;
         this.doctorService = doctorService;
         this.officeService = officeService;
-        this.appointmentService = appointmentService;
     }
 
     /**
@@ -144,7 +133,7 @@ public class  HomeController {
         System.out.println("specialty: " + specialty);
         System.out.println("selectedSpecialty: " + selectedSpecialty);
 
-        session.setAttribute("specialty", specialty);
+        session.setAttribute("selectedSpecialty", specialty);
         selectedSpecialty = specialty;
 
         // Redirects back to the index page if no specialty is selected.
@@ -182,6 +171,12 @@ public class  HomeController {
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
+
+        /* TODO: Fix query redirect problem.
+         * Everytime this page gets redirected to, it re-queries everything below. This occurs when the user is using
+         * the select-clinic page and redirects to a further page without first selecting a clinic & doctor. This is
+         * inefficient and could cause possible memory leakages. Consider different ways to fix this, such as saving the
+         * query results and retrieving them after every redirect instead of rerunning the queries. */
 
         List<Office> allOffices = officeService.getAllOffices();
 

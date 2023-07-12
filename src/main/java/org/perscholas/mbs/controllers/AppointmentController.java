@@ -50,21 +50,34 @@ public class AppointmentController {
     public String bookAppointmentPage(Model model, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
 
         log.warn("I am in the book-appointment controller method");
-        registeredPatient = (Patient) session.getAttribute("registeredPatient");
 
-        if (selectedSpecialty.isEmpty()) {
+        log.info("Retrieving selectedSpecialty from HttpSession. Casting returned value from Object to String");
+        selectedSpecialty = (String) session.getAttribute("selectedSpecialty");
+        System.out.println(selectedSpecialty);
+
+        log.info("Retrieving selectedOffice from HttpSession. Casting returned value from Object to Office");
+        selectedOffice = (Office) session.getAttribute("selectedOffice");
+
+        log.info("Retrieving selectedDoctor from HttpSession. Casting returned value from Object to Doctor");
+        selectedDoctor = (Doctor) session.getAttribute("selectedDoctor");
+
+        log.info("Retrieving registeredPatient from HttpSession. Casting returned value from Object to Patient");
+        registeredPatient = (Patient) session.getAttribute("registeredPatient");
+        // TODO: retrieve registeredPatient from database instead of HttpSession - maybe
+
+        if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
 
-        if (selectedDoctor.getName() == null) {
+        if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
             return "redirect:select-clinic";
         }
 
-        if (registeredPatient.getFullName() == null) {
+        if (registeredPatient == null) {
             log.warn("Patient Not Registered!");
             redirectAttributes.addFlashAttribute("insertedDangerPatient", "Please Complete Registration!");
             return "redirect:patient-registration";
@@ -148,19 +161,19 @@ public class AppointmentController {
 
         log.warn("I am in the appointment-confirmation controller method");
 
-        if (selectedSpecialty.isEmpty()) {
+        if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
 
-        if (selectedDoctor.getName() == null) {
+        if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
             return "redirect:select-clinic";
         }
 
-        if (registeredPatient.getFullName() == null) {
+        if (registeredPatient == null) {
             log.warn("Patient Not Registered!");
             redirectAttributes.addFlashAttribute("insertedDangerPatient", "Please Complete Registration!");
             return "redirect:patient-registration";
@@ -216,6 +229,7 @@ public class AppointmentController {
      *              to the model, which are then accessible in the view.
      * @return The name of the view to be rendered, in this case "appointment-lookup".
      */
+    // TODO: Implement verification so user's cannot see other patient's appointment details
     @GetMapping(value = "appointment-lookup")
     public String appointmentLookupPage(Model model) {
 
@@ -251,6 +265,7 @@ public class AppointmentController {
      * @return A redirect instruction back to the appointment lookup page, with the relevant flash attributes added.
      * @throws Exception Throws an Exception if there's an issue getting the list of all appointments.
      */
+    // TODO: Implement verification so user's cannot see other patient's appointment details
     @PostMapping(value = "/post-appointment-lookup")
     public String appointmentLookupProcess(@RequestParam(name = "12345", required = false) Integer id, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -294,6 +309,7 @@ public class AppointmentController {
      *
      * @return The name of the view to be rendered after the appointment is cancelled, in this case the 'appointment-lookup' page.
      */
+    // TODO: Prevent users from cancelling other patient's appointments
     @PostMapping(value = "/post-appointment-cancellation")
     public String appointmentCancellationProcess() {
 
