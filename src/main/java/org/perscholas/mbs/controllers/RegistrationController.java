@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.perscholas.mbs.dao.PatientRepoI;
+import org.perscholas.mbs.models.Doctor;
+import org.perscholas.mbs.models.Office;
 import org.perscholas.mbs.models.Patient;
 import org.perscholas.mbs.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 public class RegistrationController {
 
+    // Fields to hold information throughout the flow of the application
+    private String selectedSpecialty = null;
+    private Office selectedOffice = new Office();
+    private Doctor selectedDoctor = new Doctor();
+
+    // Injecting the necessary services and repositories
     private final PatientRepoI patientRepoI;
     private final PatientService patientService;
-
-
-    //private HttpSession session;
-    //private String selectedSpecialty = (String) session.getAttribute("specialty");
 
     /**
      * Constructor for RegistrationController. Initializes all repository interfaces and service classes via dependency injection.
@@ -56,22 +60,24 @@ public class RegistrationController {
     public String patientRegistrationPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
         log.warn("I am in the patient-registration controller method");
-        String selectedSpecialty = (String) session.getAttribute("selectedSpecialty");
+        selectedSpecialty = (String) session.getAttribute("selectedSpecialty");
 
         System.out.println("selectedSpecialty: " + selectedSpecialty);
+        System.out.println("selectedDoctor: " + selectedDoctor);
 
+        // TODO: Create method "isSpecialtyNull", call method, replacing following 5 lines of code. Probably use service layer?
         if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
-
-        /*
-        if (selectedDoctor.getName() == null) {
+        /* TODO: Define and fix selectedDoctor.getName() and selectedDoctor == null bug. then create method "isDoctorNull".
+         *  User currently can navigate from select clinic to patient registration without making a selection.*/
+        if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
             return "redirect:select-clinic";
-        }*/
+        }
 
         model.addAttribute("patient", new Patient());
 

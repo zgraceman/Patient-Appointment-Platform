@@ -72,12 +72,14 @@ public class AppointmentController {
         registeredPatient = (Patient) session.getAttribute("registeredPatient");
         // TODO: retrieve registeredPatient from database instead of HttpSession - maybe
 
+        // TODO: Create method "isSpecialtyNull", call method, replacing following 5 lines of code. Probably use service layer?
         if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
 
+        // TODO: Define and fix selectedDoctor.getName() and selectedDoctor == null bug. then create method "isDoctorNull"
         if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
@@ -168,12 +170,14 @@ public class AppointmentController {
 
         log.warn("I am in the appointment-confirmation controller method");
 
+        // TODO: Create method "isSpecialtyNull", call method, replacing following 5 lines of code. Probably use service layer?
         if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
 
+        // TODO: Define and fix selectedDoctor.getName() and selectedDoctor == null bug. then create method "isDoctorNull"
         if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");

@@ -161,6 +161,7 @@ public class  HomeController {
         System.out.println("specialty: " + session.getAttribute("specialty"));
         System.out.println("selectedSpecialty: " + selectedSpecialty);
 
+        // TODO: Create method "isSpecialtyNull", call method, replacing following 5 lines of code. Probably use service layer?
         if (selectedSpecialty.isEmpty()) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
