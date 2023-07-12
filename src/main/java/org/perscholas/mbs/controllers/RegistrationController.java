@@ -26,6 +26,13 @@ public class RegistrationController {
     //private HttpSession session;
     //private String selectedSpecialty = (String) session.getAttribute("specialty");
 
+    /**
+     * Constructor for RegistrationController. Initializes all repository interfaces and service classes via dependency injection.
+     * Dependency injection allows the Spring framework to automatically manage the lifecycle of the dependencies.
+     *
+     * @param patientRepoI The repository for handling database operations related to patients.
+     * @param patientService The service class encapsulating business logic related to patients.
+     */
     @Autowired
     public RegistrationController(PatientRepoI patientRepoI, PatientService patientService) {
         this.patientRepoI = patientRepoI;

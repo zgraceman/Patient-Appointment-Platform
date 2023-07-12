@@ -61,8 +61,7 @@ import java.util.Optional;
 /**
  * HomeController is the main controller for the medical booking system web application.
  * This class handles web requests and responses, manages data flow and business logic.
- * It has fields to hold information throughout the flow of the application, including selected specialty, selected office,
- * selected doctor, registered patient, selected date and time, and building appointment.
+ *
  */
 @Controller
 @Slf4j
@@ -84,12 +83,8 @@ public class  HomeController {
      *
      * @param doctorRepoI The repository for handling database operations related to doctors.
      * @param officeRepoI The repository for handling database operations related to offices.
-     * patientRepoI The repository for handling database operations related to patients.
-     * appointmentRepoI The repository for handling database operations related to appointments.
-     * patientService The service class encapsulating business logic related to patients.
      * @param doctorService The service class encapsulating business logic related to doctors.
      * @param officeService The service class encapsulating business logic related to offices.
-     * appointmentService The service class encapsulating business logic related to appointments.
      */
     @Autowired
     public HomeController(DoctorRepoI doctorRepoI, OfficeRepoI officeRepoI, DoctorService doctorService, OfficeService officeService) {

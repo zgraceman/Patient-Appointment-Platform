@@ -40,6 +40,13 @@ public class AppointmentController {
     private final AppointmentRepoI appointmentRepoI;
     private final AppointmentService appointmentService;
 
+    /**
+     * Constructor for AppointmentController. Initializes all repository interfaces and service classes via dependency injection.
+     * Dependency injection allows the Spring framework to automatically manage the lifecycle of the dependencies.
+     *
+     * @param appointmentRepoI The repository for handling database operations related to appointments.
+     * @param appointmentService The service class encapsulating business logic related to appointments.
+     */
     @Autowired
     public AppointmentController(AppointmentRepoI appointmentRepoI, AppointmentService appointmentService) {
         this.appointmentRepoI = appointmentRepoI;
