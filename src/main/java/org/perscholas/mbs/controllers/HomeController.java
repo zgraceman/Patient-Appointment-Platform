@@ -2,6 +2,7 @@
 TODO:
 1. Create separate controllers for separate functionalities: Split the HomeController into separate controllers
 like LoginController, RegistrationController, and AppointmentController to improve manageability and readability.
+- Complete!
 
 2. Refactor repetitive logic into methods: Extract repetitive checks (like specialty, doctor, patient null/empty
 checks) into separate methods to reduce code duplication and enhance readability.
@@ -24,39 +25,19 @@ string value for redirection.
 package org.perscholas.mbs.controllers;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.perscholas.mbs.dao.AppointmentRepoI;
 import org.perscholas.mbs.dao.DoctorRepoI;
 import org.perscholas.mbs.dao.OfficeRepoI;
-import org.perscholas.mbs.dao.PatientRepoI;
-import org.perscholas.mbs.models.Appointment;
 import org.perscholas.mbs.models.Doctor;
 import org.perscholas.mbs.models.Office;
-import org.perscholas.mbs.models.Patient;
-import org.perscholas.mbs.service.AppointmentService;
 import org.perscholas.mbs.service.DoctorService;
 import org.perscholas.mbs.service.OfficeService;
-import org.perscholas.mbs.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.sql.Time;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The HomeController class is a Spring MVC Controller that manages the flow of the application from the home page.
