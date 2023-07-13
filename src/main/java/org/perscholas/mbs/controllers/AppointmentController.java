@@ -23,6 +23,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The AppointmentController class is a Spring Web controller that handles requests related to appointments. This
+ * controller is responsible for functionalities such as viewing the appointment booking page, booking an appointment,
+ * confirming the appointment, and canceling the appointment.
+ *
+ * The class maintains multiple fields throughout the flow of the application, representing the selected specialty,
+ * office, doctor, registered patient, selected date and time, and an Appointment object being created. It also includes
+ * instances of AppointmentRepoI and AppointmentService for interacting with the appointment data.
+ */
 @Controller
 @Slf4j
 public class AppointmentController {
@@ -40,12 +49,41 @@ public class AppointmentController {
     private final AppointmentRepoI appointmentRepoI;
     private final AppointmentService appointmentService;
 
+    /**
+     * Constructor for AppointmentController. Initializes all repository interfaces and service classes via dependency injection.
+     * Dependency injection allows the Spring framework to automatically manage the lifecycle of the dependencies.
+     *
+     * @param appointmentRepoI The repository for handling database operations related to appointments.
+     * @param appointmentService The service class encapsulating business logic related to appointments.
+     */
     @Autowired
     public AppointmentController(AppointmentRepoI appointmentRepoI, AppointmentService appointmentService) {
         this.appointmentRepoI = appointmentRepoI;
         this.appointmentService = appointmentService;
     }
 
+    /**
+     * HTTP GET handler for the "book-appointment" endpoint.
+     *
+     * Method to prepare and display the book appointment page. Retrieves necessary objects like selectedSpecialty,
+     * selectedOffice, selectedDoctor, and registeredPatient from the session. Also, adds a new Appointment object
+     * to the model under the attribute "appointment", which is used in the view to bind form data.
+     *
+     * If selectedSpecialty, selectedDoctor or registeredPatient is null, the method redirects the user to the
+     * respective previous page with a suitable warning message.
+     *
+     * TODO: Create method "isSpecialtyNull" and "isDoctorNull" for better manageability and code readability.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @param session The HttpSession object is used to retrieve session attributes like selectedSpecialty,
+     *                selectedOffice, selectedDoctor, and registeredPatient.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
+     *                           can be used after a redirect. In this case, it's used to add a warning message
+     *                           when no specialty, doctor or patient has been registered.
+     * @return The name of the view to be rendered, or a redirect instruction if necessary objects are null.
+     * @throws Exception If an error occurs during the method execution.
+     */
     @GetMapping(value = "book-appointment")
     public String bookAppointmentPage(Model model, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -65,12 +103,14 @@ public class AppointmentController {
         registeredPatient = (Patient) session.getAttribute("registeredPatient");
         // TODO: retrieve registeredPatient from database instead of HttpSession - maybe
 
+        // TODO: Create method "isSpecialtyNull", call method, replacing following 5 lines of code. Probably use service layer?
         if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
 
+        // TODO: Define and fix selectedDoctor.getName() and selectedDoctor == null bug. then create method "isDoctorNull"
         if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
@@ -161,12 +201,14 @@ public class AppointmentController {
 
         log.warn("I am in the appointment-confirmation controller method");
 
+        // TODO: Create method "isSpecialtyNull", call method, replacing following 5 lines of code. Probably use service layer?
         if (selectedSpecialty == null) {
             log.warn("Specialty is empty! Returning to index");
             redirectAttributes.addFlashAttribute("insertedDanger", "Please select a specialty!");
             return "redirect:index";
         }
 
+        // TODO: Define and fix selectedDoctor.getName() and selectedDoctor == null bug. then create method "isDoctorNull"
         if (selectedDoctor == null) {
             log.warn("Doctor is Empty! Returning to select-clinic");
             redirectAttributes.addFlashAttribute("insertedDangerClinic", "Please select a Clinic and Doctor!");
@@ -321,5 +363,4 @@ public class AppointmentController {
 
         return "appointment-lookup";
     }
-
 }
