@@ -17,6 +17,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * RegistrationController is a Spring MVC Controller that handles the patient registration process
+ * within the MedcareBookingSystem. This process includes handling the selection of specialty, office,
+ * and doctor, and managing patient data before and during the registration.
+ *
+ * Internally, the controller uses a PatientRepoI for interacting with the database, and a PatientService
+ * for handling business rules related to patients. It maintains the state of the selected specialty, office,
+ * and doctor between requests using class-level fields.
+ */
 @Controller
 @Slf4j
 public class RegistrationController {
@@ -44,17 +53,21 @@ public class RegistrationController {
     }
 
     /**
-     * HTTP GET handler for the "patient-registration" endpoint.
+     * HTTP GET handler for the "/patient-registration" endpoint.
      *
-     * Method to display the patient registration page. Also adds a new Patient object to the model under the attribute
-     * "patient", which is used in the view to bind form data.
+     * This method prepares the data required to display the patient registration page. It validates the selected
+     * specialty and doctor from the session. If either of these values are not set, it redirects the user back to the
+     * appropriate page with a warning message. Additionally, it adds a new Patient object to the model for form binding.
      *
+     * @param session The HttpSession object is used to retrieve the selected specialty and doctor.
      * @param model The Model object is automatically provided by Spring and can be used to add attributes
      *              to the model, which are then accessible in the view.
      * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
-     *                           can be used after a redirect. In this case, it's used to add a warning message
-     *                           when no specialty or doctor has been selected.
-     * @return The name of the view to be rendered, or redirect instruction.
+     *                           can be used after a redirect. In this case, it's used to add warning messages
+     *                           when either no specialty or no doctor has been selected.
+     * @return A redirect instruction back to the index page if no specialty has been selected, or
+     *         back to the select-clinic page if no doctor has been selected, or
+     *         the name of the view to be rendered - "patient-registration".
      */
     @GetMapping(value = "patient-registration")
     public String patientRegistrationPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
@@ -87,19 +100,18 @@ public class RegistrationController {
     /**
      * HTTP POST handler for the "/post-patient-registration" endpoint.
      *
-     * Method for processing the form data of a new patient. The Patient object is automatically populated with the form data and
-     * validated. If there are validation errors, the user is returned to the patient registration page.
+     * This method processes the form data submitted from the patient registration page. It validates the Patient object
+     * and if there are errors, it returns back to the registration page. If the form data is valid, it saves the Patient
+     * object in the database and sets it in the session as "registeredPatient". The user is then redirected to the
+     * book-appointment page.
      *
-     * If the Patient object is valid, it's saved to the database and also stored in the `registeredPatient`
-     * instance variable for later use.
-     *
-     * @param patient A Patient object, annotated with @Valid to enable validation and @ModelAttribute to indicate
-     *                that it should be populated with form data.
-     * @param bindingResult The BindingResult object contains the results of the validation. It's automatically
-     *                      populated by Spring when the method is called.
-     * @param model The Model object is automatically provided by Spring and can be used to add attributes to the
-     *              model, which are then accessible in the view.
-     * @return The name of the view to be rendered, or a redirect instruction if the Patient object is valid.
+     * @param patient A Patient object, annotated with @Valid and @ModelAttribute, which is populated with form data and validated.
+     * @param bindingResult The BindingResult object that holds the result of the validation and binding and contains errors if any.
+     * @param session The HttpSession object is used to store the registered patient.
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @return A redirect instruction to the book-appointment page if the form data is valid, or
+     *         back to the patient-registration page if there are errors.
      */
     @PostMapping("/post-patient-registration")
     public String patientProcess(@Valid @ModelAttribute("patient") Patient patient, BindingResult bindingResult, HttpSession session, Model model) {

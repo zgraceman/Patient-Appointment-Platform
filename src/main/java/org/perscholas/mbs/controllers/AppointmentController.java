@@ -23,6 +23,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The AppointmentController class is a Spring Web controller that handles requests related to appointments. This
+ * controller is responsible for functionalities such as viewing the appointment booking page, booking an appointment,
+ * confirming the appointment, and canceling the appointment.
+ *
+ * The class maintains multiple fields throughout the flow of the application, representing the selected specialty,
+ * office, doctor, registered patient, selected date and time, and an Appointment object being created. It also includes
+ * instances of AppointmentRepoI and AppointmentService for interacting with the appointment data.
+ */
 @Controller
 @Slf4j
 public class AppointmentController {
@@ -53,6 +62,28 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
+    /**
+     * HTTP GET handler for the "book-appointment" endpoint.
+     *
+     * Method to prepare and display the book appointment page. Retrieves necessary objects like selectedSpecialty,
+     * selectedOffice, selectedDoctor, and registeredPatient from the session. Also, adds a new Appointment object
+     * to the model under the attribute "appointment", which is used in the view to bind form data.
+     *
+     * If selectedSpecialty, selectedDoctor or registeredPatient is null, the method redirects the user to the
+     * respective previous page with a suitable warning message.
+     *
+     * TODO: Create method "isSpecialtyNull" and "isDoctorNull" for better manageability and code readability.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @param session The HttpSession object is used to retrieve session attributes like selectedSpecialty,
+     *                selectedOffice, selectedDoctor, and registeredPatient.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
+     *                           can be used after a redirect. In this case, it's used to add a warning message
+     *                           when no specialty, doctor or patient has been registered.
+     * @return The name of the view to be rendered, or a redirect instruction if necessary objects are null.
+     * @throws Exception If an error occurs during the method execution.
+     */
     @GetMapping(value = "book-appointment")
     public String bookAppointmentPage(Model model, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
 
@@ -332,5 +363,4 @@ public class AppointmentController {
 
         return "appointment-lookup";
     }
-
 }

@@ -59,9 +59,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * HomeController is the main controller for the medical booking system web application.
- * This class handles web requests and responses, manages data flow and business logic.
+ * The HomeController class is a Spring MVC Controller that manages the flow of the application from the home page.
+ * It guides users through the selection of a specialty, then the selection of a clinic and doctor that offer
+ * the chosen specialty.
  *
+ * This controller interacts with both the Doctor and Office domains and their respective repositories and services,
+ * which encapsulate all the operations related to these domains.
+ *
+ * HomeController utilizes HttpSession for maintaining user's selections (like selected specialty, office, doctor)
+ * across different requests. It also makes use of the Model and RedirectAttributes to send data to the views
+ * and handle redirects.
  */
 @Controller
 @Slf4j
@@ -95,10 +102,14 @@ public class  HomeController {
     }
 
     /**
-     * Method to display home page.
+     * HTTP GET handler for the "/" and "/index" endpoints.
      *
-     * @param model The model object to hold attributes that are used in the view.
-     * @return The name of the home page view to be rendered.
+     * This method is used to display the home page. It adds an attribute "specialty" to the model with an initial
+     * empty string value. This attribute is used in the view to bind form data.
+     *
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @return The name of the view to be rendered - "index".
      */
     @GetMapping(value = {"/", "/index"})
     public String homePage(Model model) {
@@ -113,18 +124,28 @@ public class  HomeController {
     }
 
     /**
-     * Method to handle post request from index page.
+     * HTTP POST handler for the "/post-index" endpoint.
      *
-     * @param specialty The specialty selected by the user.
-     * @param model The model object to hold attributes that are used in the view.
-     * @param redirectAttributes Object for specifying attributes for redirect scenarios.
-     * @return The path to redirect to based on whether a specialty was selected or not.
+     * This method is used to process the selected specialty. It retrieves the selected specialty from the
+     * form data and stores it in the session and in the `selectedSpecialty` instance variable. If no specialty
+     * is selected, it redirects the user back to the index page with a warning message.
+     *
+     * @param specialty A String representing the selected specialty, annotated with @ModelAttribute to indicate
+     *                  that it should be populated with form data.
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @param session The HttpSession object is used to store the selected specialty.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
+     *                           can be used after a redirect. In this case, it's used to add a warning message
+     *                           when no specialty has been selected.
+     * @return A redirect instruction, either back to the index page if no specialty has been selected, or
+     *         to the select-clinic page if a specialty was selected.
      */
-    // ! is this whole method redundant?
     @PostMapping("/post-index")
     public String indexProcess(@ModelAttribute("specialty") String specialty, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
         log.warn("I am in the indexProcess controller method");
+        // Debug
         System.out.println("specialty: " + specialty);
         System.out.println("selectedSpecialty: " + selectedSpecialty);
 
@@ -144,20 +165,27 @@ public class  HomeController {
     }
 
     /**
-     * GET handler for "/select-clinic".
+     * HTTP GET handler for the "/select-clinic" endpoint.
      *
-     * Method to prepare and display the clinic selection page. If no specialty is selected, redirects to index.
-     * Collects and adds doctors per office to the model using the selected specialty.
+     * This method prepares data required to display the clinic selection page. It validates the selected
+     * specialty and retrieves doctors belonging to the chosen specialty from all offices.
+     * If the specialty is not selected, it redirects the user back to the index page with a warning message.
      *
-     * @param model Spring-provided Model for adding attributes to be accessed in the view.
-     * @param redirectAttributes Used for session attributes after redirect, e.g., warning message.
-     * @throws Exception If there's an error retrieving the list of all offices.
-     * @return Redirect instruction or name of the view to render.
+     * @param session The HttpSession object is used to retrieve the selected specialty.
+     * @param model The Model object is automatically provided by Spring and can be used to add attributes
+     *              to the model, which are then accessible in the view.
+     * @param redirectAttributes The RedirectAttributes object is used to add attributes to the session that
+     *                           can be used after a redirect. In this case, it's used to add a warning message
+     *                           when no specialty has been selected.
+     * @return A redirect instruction back to the index page if no specialty has been selected, or
+     *         the name of the view to be rendered - "select-clinic".
+     * @throws Exception if an error occurs during execution.
      */
     @GetMapping(value = "/select-clinic")
     public String selectClinicPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) throws Exception {
 
         log.warn("I am in the select-clinic controller method");
+        // Debug
         System.out.println("specialty: " + session.getAttribute("specialty"));
         System.out.println("selectedSpecialty: " + selectedSpecialty);
 
@@ -193,13 +221,15 @@ public class  HomeController {
     /**
      * HTTP POST handler for the "/post-select-clinic" endpoint.
      *
-     * Method to process the clinic and doctor chosen by the user from the clinic selection page.
-     * The chosen clinic and doctor are stored in `selectedOffice` and `selectedDoctor` respectively
-     * for later use.
+     * This method processes the selected clinic and doctor. It retrieves these values from the form data
+     * and stores them in the session.
      *
-     * @param clinic The name of the selected clinic sent as a request parameter.
-     * @param doctorName The name of the selected doctor sent as a request parameter.
-     * @return A redirect instruction to the patient registration page.
+     * @param clinic A String representing the selected clinic, annotated with @RequestParam to indicate
+     *               that it should be populated with form data.
+     * @param doctorName A String representing the selected doctor, annotated with @RequestParam to indicate
+     *                   that it should be populated with form data.
+     * @param session The HttpSession object is used to store the selected clinic and doctor.
+     * @return A redirect instruction to the patient-registration page.
      */
     @PostMapping("/post-select-clinic")
     public String selectClinicProcess(@RequestParam(name = "clinicChoice") String clinic, @RequestParam(name = "doctorChoice") String doctorName, HttpSession session) {
