@@ -1,5 +1,5 @@
-# MedcareBookingSystem
-Capstone Project for Per Scholas Full Stack Java Training. This application is designed for users/patients who need to book an appointment with a medical professional. 
+# Patient Appointment Platform
+Capstone and personal project for Per Scholas Full Stack Java Training. This application is designed for users/patients who need to book an appointment with a medical professional. 
 
 ## Features
 - Symptom selector
@@ -8,9 +8,14 @@ Capstone Project for Per Scholas Full Stack Java Training. This application is d
 - Appointment creating, viewing, and deleting.
 
 ## Technologies Used
+- Java
+- HTML
+- CSS
+- JavaScript
 - Spring Boot
 - MySQL
 - Spring Security
+- Spring Validation
 - Thymeleaf
 - Spring Web
 - Spring Data
