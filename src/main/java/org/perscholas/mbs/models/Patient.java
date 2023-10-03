@@ -15,7 +15,18 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-
+/**
+ * Represents a patient in the appointment platform.
+ *
+ * This entity contains details about a mock patient, including personal
+ * information such as name, date of birth, gender, contact details,
+ * and secure information like password and SSN.
+ *
+ * The password field is hashed using BCrypt for security reasons, and
+ * standard validation rules are applied on email and phone number fields.
+ * The class utilizes Lombok for generating boilerplate code and JPA annotations
+ * for persistence.
+ */
 @Entity
 @Table(name = "Patients")
 @Slf4j
@@ -49,13 +60,13 @@ public class Patient {
     String phoneNumber;
 
     @NonNull
-    int ssn;
+    int ssn; // Change to string, doesn't actually use ssn
 
     @Setter(AccessLevel.NONE)
     String password;
 
-    public String setPassword(String password) {
-       return this.password = new BCryptPasswordEncoder().encode(password);
+    public String setPassword(String password) {  // Return void, not string,
+       return this.password = new BCryptPasswordEncoder().encode(password);  // move to service layer or utility
     }
 
     public Patient(String fullName, String email, String password) {
